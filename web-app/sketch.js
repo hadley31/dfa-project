@@ -4,6 +4,8 @@ let state_radius = 70;
 let alphabet;
 let states;
 
+let test_string;
+let test_string_index;
 let test_complete = true;
 
 let current_state;
@@ -13,7 +15,7 @@ function setup() {
 
 	createCanvas(windowWidth, windowHeight);
 
-	let params = getUrlParams();
+	let params = get_url_params();
 
 	if (!params || !params.a || !params.s || !params.t || !params.ss || !params.as || !params.test) {
 		console.error('Parameter error.');
@@ -29,31 +31,33 @@ function setup() {
 
 	console.log(transitions_temp);
 
-	if (transitions_temp.length != state_ids.length * alphabet.length){
+	if (transitions_temp.length != state_ids.length * alphabet.length) {
 		console.log('Transition parameter error.');
 		return;
 	}
 
 	let transitions = [];
 
-	for (let i = 0; i < state_ids.length; i++){
+	for (let i = 0; i < state_ids.length; i++) {
 		let result = {};
-		for (let j = 0; j < alphabet.length; j++){
+		for (let j = 0; j < alphabet.length; j++) {
 			result[alphabet[j]] = transitions_temp[i * alphabet.length + j];
 		}
 		transitions.push(result);
 	}
 
 	let start_state = params.ss;
-	let accepting_states = [...params.as.match(/[a-zA-Z0-9]+/g)];
+	let accepting_states = [...params.as.match(/[a-z0-9]+/gi)];
 
 	console.log(transitions);
 	console.log(start_state);
 	console.log(accepting_states);
 
-	let test_string_match = params.test.match(/[a-zA-Z0-9]+/);
+	let test_string_match = params.test.match(/[a-z0-9]+/i);
 
 	let test_string = test_string_match ? test_string_match[0] : '';
+
+	update_radius();
 
 	initStates(
 		state_ids,
@@ -85,9 +89,7 @@ function initStates(stateids, alpha, transitions, start, accepting) {
 		let x = width / 2 + cos(angle) * radius;
 		let y = height / 2 + sin(angle) * radius;
 
-		let r = state_radius;
-
-		states.push(new State(id, x, y, r, transitions[i], id == start, accepting.includes(id)));
+		states.push(new State(id, x, y, transitions[i], id == start, accepting.includes(id)));
 	}
 
 	start = states.find(x => x.isStart);
@@ -97,16 +99,18 @@ function draw() {
 	background(66, 134, 244);
 
 	for (let s of states) {
-		drawTransitions(s);
+		draw_transitions(s);
 	}
 
 	for (let s of states) {
 		s.show();
 	}
+
+	draw_test_string();
 }
 
 
-function clearDFA() {
+function clear_dfa() {
 	if (test_complete === false) {
 		return;
 	}
@@ -115,12 +119,44 @@ function clearDFA() {
 }
 
 
-function getUrlParams() {
+function get_url_params() {
 	var vars = {};
 	window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
 		vars[key] = value;
 	});
 	return vars;
+}
+
+function draw_test_string() {
+	if (!test_string) {
+		return;
+	}
+
+	textAlign(LEFT, CENTER);
+
+	let w = textWidth(test_string);
+
+	let x = width / 2 - w / 2;
+	let y = textSize() + 10;
+
+	let str = test_string.substring(0, test_string_index - 1);
+
+	fill(0);
+	text(str, x, y);
+
+	x += textWidth(str);
+
+	str = test_string.charAt(test_string_index - 1);
+
+	fill(220);
+	text(str, x, y);
+
+	x += textWidth(str);
+
+	str = test_string.substring(test_string_index);
+
+	fill(0);
+	text(str, x, y);
 }
 
 
@@ -131,17 +167,22 @@ async function test(input) {
 		return;
 	}
 
-	if(input == undefined){
+	if (input == undefined) {
 		input = '';
 	}
 
-	console.log('Testing: ' + input);
+	test_string = input;
+	test_string_index = 0;
+
+	console.log('Testing: ' + test_string);
+
+	await sleep(2000);
 
 	test_complete = false;
 	current_state = states.find(x => x.isStart == true);
 
-	for (let c of input) {
-		await sleep(1000);
+	for (let c of test_string) {
+		await sleep(1500);
 		if (current_state == undefined) {
 			console.log('No current state???');
 			return;
@@ -152,6 +193,7 @@ async function test(input) {
 			symbol: c
 		};
 		current_state = current_state.transition(c);
+		test_string_index++;
 	}
 
 	test_complete = true;
@@ -168,11 +210,10 @@ function sleep(ms) {
 }
 
 class State {
-	constructor(id, x, y, r, t, s, a) {
+	constructor(id, x, y, t, s, a) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
-		this.r = r;
 		this.transitions = t;
 		this.isStart = s;
 		this.isAccepting = a;
@@ -197,22 +238,22 @@ class State {
 		stroke(0);
 		strokeWeight(state_radius / 25);
 		ellipseMode(CENTER, CENTER);
-		ellipse(this.x, this.y, this.r);
+		ellipse(this.x, this.y, state_radius);
 
 		if (this.isAccepting) {
-			ellipse(this.x, this.y, this.r * 0.85);
+			ellipse(this.x, this.y, state_radius * 0.85);
 		}
 
 		if (this.isStart) {
 			strokeWeight(state_radius / 15);
-			let x1 = this.x - this.r / 2;
-			line(x1, this.y, x1 - this.r / 3, this.y + this.r / 3);
-			line(x1, this.y, x1 - this.r / 3, this.y - this.r / 3);
+			let x1 = this.x - state_radius / 2;
+			line(x1, this.y, x1 - state_radius / 3, this.y + state_radius / 3);
+			line(x1, this.y, x1 - state_radius / 3, this.y - state_radius / 3);
 		}
 
 		noStroke();
 		fill(0);
-		textSize(this.r / 2);
+		textSize(state_radius / 2);
 		textAlign(CENTER, CENTER);
 		text(this.id, this.x, this.y);
 	}
@@ -222,7 +263,29 @@ class State {
 	}
 }
 
-function drawTransitions(state) {
+function windowResized() {
+	resizeCanvas(windowWidth, windowHeight);
+	update_radius();
+}
+
+function update_radius() {
+	radius = height / 4;
+	state_radius = height / 10;
+
+	if (!states) return;
+
+	for (let i = 0; i < states.length; ++i) {
+
+		let angle = i / states.length * TWO_PI + PI;
+		let x = width / 2 + cos(angle) * radius;
+		let y = height / 2 + sin(angle) * radius;
+
+		states[i].x = x;
+		states[i].y = y;
+	}
+}
+
+function draw_transitions(state) {
 
 	let trans = {};
 	for (let a of Object.keys(state.transitions)) {
@@ -236,7 +299,7 @@ function drawTransitions(state) {
 
 	for (let s of Object.keys(trans)) {
 
-		let other = getStateByID(s);
+		let other = get_state_by_ID(s);
 
 
 		stroke(0);
@@ -281,20 +344,21 @@ function drawTransitions(state) {
 			textPos.add(p5.Vector.mult(per, state_radius / 3));
 		}
 
-		let t = getTransString(trans[s]);
+		let t = get_trans_string(trans[s]);
 
 		noStroke();
 		textSize(state_radius / 3);
 		fill(255);
+		textAlign(CENTER,CENTER);
 		text(t, textPos.x, textPos.y);
 	}
 }
 
-function getStateByID(id) {
+function get_state_by_ID(id) {
 	return states.find(x => x.id == id);
 }
 
-function getTransString(arr) {
+function get_trans_string(arr) {
 	if (arr.length == 0) {
 		return;
 	}
