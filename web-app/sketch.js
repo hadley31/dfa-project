@@ -27,7 +27,7 @@ function setup() {
 	console.log(state_ids);
 	console.log(alphabet);
 
-	console.log(transitions_temp.length);
+	console.log(transitions_temp);
 
 	if (transitions_temp.length != state_ids.length * alphabet.length){
 		console.log('Transition parameter error.');
@@ -39,7 +39,7 @@ function setup() {
 	for (let i = 0; i < state_ids.length; i++){
 		let result = {};
 		for (let j = 0; j < alphabet.length; j++){
-			result[alphabet[j]] = transitions_temp[i * state_ids.length + j];
+			result[alphabet[j]] = transitions_temp[i * alphabet.length + j];
 		}
 		transitions.push(result);
 	}
@@ -47,6 +47,7 @@ function setup() {
 	let start_state = params.ss;
 	let accepting_states = [...params.as.match(/[a-zA-Z0-9]+/g)];
 
+	console.log(transitions);
 	console.log(start_state);
 	console.log(accepting_states);
 
