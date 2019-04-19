@@ -13,7 +13,8 @@ let last_transition;
 
 function setup() {
 
-	createCanvas(windowWidth, windowHeight);
+	var cnv = createCanvas(windowWidth, windowHeight);
+	cnv.style('display', 'block');
 
 	let params = get_url_params();
 
@@ -269,8 +270,9 @@ function windowResized() {
 }
 
 function update_radius() {
-	radius = height / 4;
-	state_radius = height / 10;
+	let size = min(width, height);
+	radius = size / 4;
+	state_radius = size / 10;
 
 	if (!states) return;
 
@@ -349,7 +351,7 @@ function draw_transitions(state) {
 		noStroke();
 		textSize(state_radius / 3);
 		fill(255);
-		textAlign(CENTER,CENTER);
+		textAlign(CENTER, CENTER);
 		text(t, textPos.x, textPos.y);
 	}
 }
