@@ -3,22 +3,50 @@
 
 <head>
   <title>DFA Project</title>
-
+  <link rel="stylesheet" href="index.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
   </script>
 </head>
 
-<body>
+<body class="bg-dark">
   <div class="container">
-    <div class="row rounded bg-primary">
-      <div class="col text-center">
-          <span class="text-center">This is a test</span>
+    <div class="row p-3">
+      <div class="col bg-dark rounded text-white p-1">
+        <span class="text-center text-light">
+          <h1><b>DFA Customizer</b></h1>
+        </span>
+        <label for="alphabet">Alphabet <span class="text-secondary">(Comma Separated; Accepts any single letter or
+            number)</span></label>
+        <input type="text" class="form-control" id="alphabet" placeholder="a,b,c">
+        <label for="states">States <span class="text-secondary">(Comma separated; Accepts any single letter or
+            number)</span></label>
+        <input type="text" class="form-control" id="states" placeholder="0,1">
+        <label for="transitions">Transitions</label>
+        <textarea class="form-control" id="transitions" rows="3"></textarea>
+        <label for="test">Test String</label>
+        <input type="text" class="form-control" id="test" placeholder="aabbcc">
+        <div class="text-center pt-3">
+          <button style="width: 30%;" type="button" class="btn-lg btn-primary" onclick="createDFA()">Create and
+            Test</button>
+        </div>
       </div>
     </div>
   </div>
+
+  <script>
+    $(document).ready(() => {
+      console.log('ready :)');
+    });
+
+    function createDFA() {
+      window.location = "./web-app/?a=[0,1]&s=[a,b]&t=[a,b,b,a]&ss=a&as=b&test=10101";
+    }
+  </script>
 </body>
 
 </html>

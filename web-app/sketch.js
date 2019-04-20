@@ -1,5 +1,5 @@
-let radius = 300;
-let state_radius = 70;
+let radius;
+let state_radius;
 
 let alphabet;
 let states;
@@ -13,8 +13,8 @@ let last_transition;
 
 function setup() {
 
-	var cnv = createCanvas(windowWidth, windowHeight);
-	cnv.style('display', 'block');
+	var canvas = createCanvas(windowWidth, windowHeight);
+	canvas.style('display', 'block');
 
 	let params = get_url_params();
 
@@ -23,9 +23,9 @@ function setup() {
 		return;
 	}
 
-	let alphabet = [...params.a.match(/[a-zA-Z0-9]+/g)];
-	let state_ids = [...params.s.match(/[a-zA-Z0-9]+/g)];
-	let transitions_temp = [...params.t.match(/[a-zA-Z0-9]+/g)];
+	let alphabet = [...params.a.match(/[a-z0-9]+/gi)];
+	let state_ids = [...params.s.match(/[a-z0-9]+/gi)];
+	let transitions_temp = [...params.t.match(/[a-z0-9]+/gi)];
 
 	console.log(state_ids);
 	console.log(alphabet);
@@ -246,10 +246,10 @@ class State {
 		}
 
 		if (this.isStart) {
-			strokeWeight(state_radius / 15);
+			strokeWeight(state_radius / 20);
 			let x1 = this.x - state_radius / 2;
-			line(x1, this.y, x1 - state_radius / 3, this.y + state_radius / 3);
-			line(x1, this.y, x1 - state_radius / 3, this.y - state_radius / 3);
+			line(x1, this.y, x1 - state_radius / 5, this.y + state_radius / 5);
+			line(x1, this.y, x1 - state_radius / 5, this.y - state_radius / 5);
 		}
 
 		noStroke();
