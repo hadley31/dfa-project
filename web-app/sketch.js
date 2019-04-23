@@ -23,9 +23,12 @@ function setup() {
 		return;
 	}
 
-	let alphabet = [...params.a.match(/[a-z0-9]+/gi)];
-	let state_ids = [...params.s.match(/[a-z0-9]+/gi)];
-	let transitions_temp = [...params.t.match(/[a-z0-9]+/gi)];
+	let alphabet_regex = /[a-z0-9]/gi;
+	let state_regex = /[a-z0-9]+/gi;
+
+	let alphabet = [...params.a.match(alphabet_regex)];
+	let state_ids = [...params.s.match(state_regex)];
+	let transitions_temp = [...params.t.match(state_regex)];
 
 	console.log(state_ids);
 	console.log(alphabet);
@@ -48,7 +51,7 @@ function setup() {
 	}
 
 	let start_state = params.ss;
-	let accepting_states = [...params.as.match(/[a-z0-9]+/gi)];
+	let accepting_states = [...params.as.match(state_regex)];
 
 	console.log(transitions);
 	console.log(start_state);

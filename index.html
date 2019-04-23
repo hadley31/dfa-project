@@ -27,11 +27,11 @@
             number)</span></label>
         <input type="text" class="form-control" id="states" placeholder="0,1">
         <label for="transitions">Transitions</label>
-        <textarea class="form-control" id="transitions" rows="3"></textarea>
+        <textarea class="form-control" id="transitions" rows="3" placeholder="0,a->0"></textarea>
         <label for="test">Test String</label>
         <input type="text" class="form-control" id="test" placeholder="aabbcc">
         <div class="text-center pt-3">
-          <button style="width: 30%;" type="button" class="btn-lg btn-primary" onclick="createDFA()">Create and
+          <button style="width: 30%;" type="button" class="btn-lg btn-primary" onclick="create_dfa()">Create and
             Test</button>
         </div>
       </div>
@@ -40,11 +40,46 @@
 
   <script>
     $(document).ready(() => {
-      console.log('ready :)');
+      $('#states').change(update_transitions);
+      $('#alphabet').change(update_transitions);
     });
 
-    function createDFA() {
-      window.location = "./web-app/?a=[0,1]&s=[a,b]&t=[a,b,b,a]&ss=a&as=b&test=10101";
+    function update_transitions() {
+      console.log('updated :)');
+    }
+
+    function create_dfa() {
+      let alphabet = $('#alphabet').val();
+      let states = $('#states').val();
+      let test_string = $('#test').val();
+
+      let transitions_temp = get_multiline_match($('#transitions').val(), /([a-z0-9])\s*,\s*([a-z0-9])\s*->\s*([a-z0-9])\s*/i);
+
+      let transitions = 'transitions';
+
+      console.log($('#transitions').val());
+      console.log(transitions_temp);
+
+
+      //window.location = `./web-app/?a=[${alphabet}]&s=[${states}]&t=[${transitions}]&ss=${'a'}&as=[${'b'}]&test=${test_string}`;
+    }
+
+    function get_multiline_match(str, regex) {
+      let results = [];
+      let r = /(^.+$)/gm;
+      for (let l of r.exec(str)) {
+        console.log(l);
+        let arr = [];
+        let result = regex.exec(l);
+        for (let i = 1; i < result.length; i++) {
+          arr.push(result[i]);
+        }
+        if (arr.length > 0){
+          results.push(arr);
+        }
+      }
+
+      return results;
     }
   </script>
 </body>
