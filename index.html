@@ -53,15 +53,20 @@
       let states = $('#states').val();
       let test_string = $('#test').val();
 
-      let transitions_temp = get_multiline_match($('#transitions').val(), /([a-z0-9])\s*,\s*([a-z0-9])\s*->\s*([a-z0-9])\s*/i);
+      
 
-      let transitions = 'transitions';
+      let transitions = get_transitions();
 
       console.log($('#transitions').val());
-      console.log(transitions_temp);
+      console.log(transitions);
 
 
-      //window.location = `./web-app/?a=[${alphabet}]&s=[${states}]&t=[${transitions}]&ss=${'a'}&as=[${'b'}]&test=${test_string}`;
+      window.location = `./web-app/?a=[${alphabet}]&s=[${states}]&t=[${transitions}]&ss=${'a'}&as=[${'b'}]&test=${test_string}`;
+    }
+    
+    function get_transitions(){
+      let transitions_temp = get_multiline_match($('#transitions').val(), /([a-z0-9])\s*,\s*([a-z0-9])\s*->\s*([a-z0-9])\s*/i);
+      return transitions_temp;
     }
 
     function get_multiline_match(str, regex) {
